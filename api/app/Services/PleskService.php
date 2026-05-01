@@ -54,10 +54,9 @@ class PleskService
 
         try {
             $this->runPlesk([
-                'ext', 'letsencrypt', 'cli.php',
-                '--secure-domain',
-                '-domain', $fqdn,
-                '-mail', $email,
+                'bin', 'extension', '--exec', 'letsencrypt', 'cli.php',
+                '--domain', $fqdn,
+                '--email', $email,
             ]);
 
             return true;
