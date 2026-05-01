@@ -115,25 +115,9 @@ WorkingDirectory=/var/www/vhosts/<apex>/artifact-host/api
 WantedBy=multi-user.target
 ```
 
-## Install — MCP half
+## Install — MCP half (for users)
 
-The MCP server runs locally on each user's machine.
-
-```bash
-cd mcp
-npm install
-npm run build
-```
-
-Publish to npm (after testing):
-
-```bash
-npm publish --access public
-```
-
-### MCP client config
-
-Drop this into your MCP client's config (e.g. Claude Desktop's `claude_desktop_config.json`):
+The MCP server is published as [`artifact-host-mcp`](https://www.npmjs.com/package/artifact-host-mcp). Drop this into your MCP client's config (e.g. Claude Desktop's `claude_desktop_config.json`) — `npx` will fetch and run it on demand:
 
 ```json
 {
@@ -150,7 +134,17 @@ Drop this into your MCP client's config (e.g. Claude Desktop's `claude_desktop_c
 }
 ```
 
-For local dev (before publishing):
+Restart your MCP client to pick up the config. Get an API key from the operator (closed beta).
+
+### Local dev (working on the MCP server itself)
+
+```bash
+cd mcp
+npm install
+npm run build
+```
+
+Then point the client at your local build:
 
 ```json
 {
@@ -163,6 +157,8 @@ For local dev (before publishing):
   }
 }
 ```
+
+To publish a new version: bump the version in `mcp/package.json`, then `cd mcp && npm publish --access public` (requires npm token with publish rights, see operator's `.npmrc`).
 
 ## Operations
 

@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Released (2026-05-01)
+- **`artifact-host-mcp@0.1.0` published to npm.** Users now install via `npx -y artifact-host-mcp` in their MCP client config. Verified: cold-`npx` load + `tools/list` JSON-RPC returns the full 5-tool catalog.
+
 ### Security (2026-05-01, pre-tester hardening)
 - **Subdomains created with `-php false`.** Plesk default is PHP-on; left unchanged this would let any user upload `shell.php` and get RCE on the VPS shared with every other CE project. Verified end-to-end: a deployed `shell.php` returns its source, not the executed output.
 - **Per-user rate limits** via `RateLimiter::for('artifacthost-writes')` (30/min) and `'artifacthost-reads'` (120/min). Keys on `user_id`. Prevents one tester from draining the shared LE 50/week pool.
