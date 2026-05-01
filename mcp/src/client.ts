@@ -36,6 +36,13 @@ export interface LogsResult {
   error: string;
 }
 
+export interface SignupResult {
+  email: string;
+  api_key: string;
+  tier: string;
+  message: string;
+}
+
 export class ApiError extends Error {
   constructor(
     readonly status: number,
@@ -71,19 +78,43 @@ export class ArtifactHostClient {
     return this.request("GET", `/api/v1/sites/${encodeURIComponent(subdomain)}/logs?${qs}`);
   }
 
-  private async request<T>(method: string, path: string, body?: unknown): Promise<T> {
+  signup(email: string): Promise<SignupResult> {
+    return this.request("POST", "/api/v1/auth/signup", { email }, { auth: false });
+  }
+
+  hasApiKey(): boolean {
+    return typeof this.cfg.apiKey === "string" && this.cfg.apiKey.length > 0;
+  }
+
+  private async request<T>(
+    method: string,
+    path: string,
+    body?: unknown,
+    opts: { auth?: boolean } = {},
+  ): Promise<T> {
+    const auth = opts.auth !== false;
+    if (auth && !this.cfg.apiKey) {
+      throw new Error(
+        "no API key configured — call the `signup` tool with an email to create an account, or set ARTIFACT_HOST_API_KEY in your MCP client env.",
+      );
+    }
+
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), this.cfg.timeoutMs);
+
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    };
+    if (auth) {
+      headers.Authorization = `Bearer ${this.cfg.apiKey}`;
+    }
 
     let res: Response;
     try {
       res = await fetch(this.cfg.apiUrl + path, {
         method,
-        headers: {
-          Authorization: `Bearer ${this.cfg.apiKey}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
+        headers,
         body: body === undefined ? undefined : JSON.stringify(body),
         signal: ctrl.signal,
       });

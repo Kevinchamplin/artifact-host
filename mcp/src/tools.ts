@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { ArtifactHostClient } from "./client.js";
+import { writeStoredKey } from "./auth-store.js";
 
 const fileSchema = z.object({
   path: z.string().min(1).max(512),
@@ -15,6 +16,9 @@ const subdomainSchema = z
   );
 
 export const inputSchemas = {
+  signup: z.object({
+    email: z.string().email().max(255),
+  }),
   deploy_site: z.object({
     subdomain: subdomainSchema,
     files: z.array(fileSchema).min(1),
@@ -34,6 +38,18 @@ export const inputSchemas = {
 };
 
 export const toolDefinitions = [
+  {
+    name: "signup",
+    description:
+      "Create a new artifact-host account. Frictionless onboarding: pass an email, get back an API key (auto-saved locally so you don't need to set any env vars), and a welcome email is sent. Call this once before deploy_site if no API key is configured. If the email is already registered, returns a 409.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        email: { type: "string", description: "Account email — also where the welcome message lands" },
+      },
+      required: ["email"],
+    },
+  },
   {
     name: "deploy_site",
     description:
@@ -120,6 +136,19 @@ export async function dispatch(
   args: unknown,
 ): Promise<unknown> {
   switch (name) {
+    case "signup": {
+      const input = inputSchemas.signup.parse(args);
+      const result = await client.signup(input.email);
+      const savedAt = writeStoredKey({
+        api_key: result.api_key,
+        email: result.email,
+      });
+      return {
+        ...result,
+        key_saved_to: savedAt,
+        next: "Your key is saved locally. Call deploy_site to publish your first site.",
+      };
+    }
     case "deploy_site": {
       const input = inputSchemas.deploy_site.parse(args);
       requireIndexHtml(input.files);

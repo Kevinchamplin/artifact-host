@@ -1,7 +1,14 @@
 {
   "name": "artifact-host-mcp",
-  "version": "0.1.0",
-  "description": "MCP server for deploying static sites via the artifact-host API.",
+  "version": "0.2.0",
+  "description": "MCP server for deploying static sites via the artifact-host API. Frictionless: signup, deploy, manage all from your AI client.",
+  "keywords": ["mcp", "model-context-protocol", "claude", "static-site", "hosting", "deployment"],
+  "homepage": "https://hosting.champlinenterprises.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Kevinchamplin/artifact-host.git",
+    "directory": "mcp"
+  },
   "license": "MIT",
   "type": "module",
   "bin": {

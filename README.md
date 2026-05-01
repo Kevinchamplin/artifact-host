@@ -15,24 +15,22 @@ Add to your MCP client config (e.g. `claude_desktop_config.json`):
       "command": "npx",
       "args": ["-y", "artifact-host-mcp"],
       "env": {
-        "ARTIFACT_HOST_API_URL": "https://hosting-api.champlinenterprises.com",
-        "ARTIFACT_HOST_API_KEY": "ah_..."
+        "ARTIFACT_HOST_API_URL": "https://hosting-api.champlinenterprises.com"
       }
     }
   }
 }
 ```
 
-Restart your client. That's it — no install step, `npx` fetches and runs the [`artifact-host-mcp`](https://www.npmjs.com/package/artifact-host-mcp) package on demand.
+Restart your client. **No API key needed up front** — the first time you ask the AI to deploy, it'll call the `signup` tool with your email, your account is created automatically, the key is saved to `~/.artifact-host/auth.json`, and a welcome email lands. From then on every deploy is one sentence away.
 
-## Get an API key
-
-Closed beta. Reach out via [a GitHub issue](https://github.com/Kevinchamplin/artifact-host/issues/new) or DM Kevin (links on [his site](https://champlinenterprises.com/contact)).
+The full landing page (with a demo conversation) is at [hosting.champlinenterprises.com](https://hosting.champlinenterprises.com).
 
 ## What you can ask the AI to do
 
 | Tool | What it does |
 |---|---|
+| `signup(email)` | Create your account on the first call. Auto-saves the API key locally. |
 | `deploy_site(subdomain, files[])` | New site at `<subdomain>.hosting.champlinenterprises.com` with HTTPS |
 | `list_sites()` | Your sites |
 | `update_site(subdomain, files[])` | Atomic-ish file replace |
