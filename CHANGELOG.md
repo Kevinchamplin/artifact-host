@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Repo split (2026-05-01)
+- **Public repo (this one) is now MCP-client-only.** The Laravel API source moved to a private operational repo. The public README is a "use the hosted service" funnel; the open-source surface is the MCP client (also published as [`artifact-host-mcp`](https://www.npmjs.com/package/artifact-host-mcp)).
+- Earlier commits in this repo's history still contain the API code as it was before the split — that's fine, the code there was MIT and was briefly public anyway. Future API changes happen in the private repo.
+
 ### Released (2026-05-01)
 - **`artifact-host-mcp@0.1.0` published to npm.** Users now install via `npx -y artifact-host-mcp` in their MCP client config. Verified: cold-`npx` load + `tools/list` JSON-RPC returns the full 5-tool catalog.
 
