@@ -1,0 +1,29 @@
+# Top-level
+.DS_Store
+.idea/
+.vscode/
+
+# api/ (Laravel)
+api/vendor/
+api/node_modules/
+api/.env
+api/.env.backup
+api/.phpunit.result.cache
+api/database/database.sqlite
+api/storage/*.key
+api/storage/logs/*.log
+api/storage/framework/cache/data/*
+api/storage/framework/sessions/*
+api/storage/framework/views/*
+api/storage/framework/testing/*
+api/bootstrap/cache/*.php
+!api/storage/framework/cache/data/.gitkeep
+!api/storage/framework/sessions/.gitkeep
+!api/storage/framework/views/.gitkeep
+!api/storage/framework/testing/.gitkeep
+
+# mcp/ (TS)
+mcp/node_modules/
+mcp/dist/
+mcp/.env
+mcp/*.tgz
