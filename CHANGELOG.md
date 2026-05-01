@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added (2026-05-01, sprints 1-5)
+- **Magic-link auth + dashboard** at `/login`, `/dashboard`, `/dashboard/sites`, `/dashboard/account`. Per-user scoping; users only see their own sites.
+- **Server-log analytics + opt-in pixel** — daily aggregates parsed every 15 min, 7-day chart on each site detail, top pages + referrers + browsers.
+- **Custom domains** (Pro tier) — CNAME verify + Plesk symlink + LE per custom domain.
+- **Light theme + Champlin Enterprises branding** — full visual overhaul. Fraunces serif headlines, warm cream paper background, yellow highlighter CTAs, CE silver mark in nav + footer ("a product by Champlin Enterprises, LLC").
+- **Frictionless install** — three paths (terminal one-liner, hosted URL, copy-paste JSON) with giant copy buttons. `curl … | install.sh` safely merges into existing Claude Desktop config without clobbering other MCP servers.
+- **Public endpoints**: `/install.json`, `/install.sh`, `/llms.txt`, `/sitemap.xml`, `/status`, `/robots.txt`. Custom 404 + 500 styled with the theme.
+- **Note**: Stripe billing deferred. Beta is free; tier upgrades (for custom domains) are manual via email during the closed period.
+
 ### Frictionless onboarding (2026-05-01)
 - **`signup(email)` MCP tool** + matching `POST /api/v1/auth/signup` endpoint (public, 5/hour/IP rate limit). First-deploy flow needs zero out-of-band coordination — vibe coders install the MCP, ask the AI to deploy, AI calls signup automatically.
 - **Local key persistence** at `~/.artifact-host/auth.json` (mode 600) — the MCP server falls back to it when no `ARTIFACT_HOST_API_KEY` env var is set.

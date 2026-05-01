@@ -6,7 +6,15 @@ Tell your AI "deploy this HTML/JS to a subdomain" — it does. You get a live HT
 
 ## Install
 
-Add to your MCP client config (e.g. `claude_desktop_config.json`):
+**Easiest (Mac/Linux/WSL):**
+
+```bash
+curl -fsSL https://hosting.champlinenterprises.com/install.sh | bash
+```
+
+The script detects your OS, finds Claude Desktop's config, backs up any existing one, merges in the artifact-host server entry (won't clobber other MCP servers you have), and tells you to restart Claude. ~5 seconds.
+
+**Or paste manually** into `claude_desktop_config.json`:
 
 ```json
 {
@@ -22,9 +30,11 @@ Add to your MCP client config (e.g. `claude_desktop_config.json`):
 }
 ```
 
+**Or fetch from a URL** if your MCP client supports it: `https://hosting.champlinenterprises.com/install.json`
+
 Restart your client. **No API key needed up front** — the first time you ask the AI to deploy, it'll call the `signup` tool with your email, your account is created automatically, the key is saved to `~/.artifact-host/auth.json`, and a welcome email lands. From then on every deploy is one sentence away.
 
-The full landing page (with a demo conversation) is at [hosting.champlinenterprises.com](https://hosting.champlinenterprises.com).
+Full landing page (with a demo conversation, install tabs, FAQ) at [hosting.champlinenterprises.com](https://hosting.champlinenterprises.com).
 
 ## What you can ask the AI to do
 
