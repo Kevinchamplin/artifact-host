@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Security (2026-05-01, pre-tester hardening)
+- **Subdomains created with `-php false`.** Plesk default is PHP-on; left unchanged this would let any user upload `shell.php` and get RCE on the VPS shared with every other CE project. Verified end-to-end: a deployed `shell.php` returns its source, not the executed output.
+- **Per-user rate limits** via `RateLimiter::for('artifacthost-writes')` (30/min) and `'artifacthost-reads'` (120/min). Keys on `user_id`. Prevents one tester from draining the shared LE 50/week pool.
+- **Apex landing page** at `https://hosting.champlinenterprises.com` replaces the default Plesk page so visitors hitting the apex see a real explanation, not the Plesk welcome screen.
+
 ### Fixed (2026-05-01, post-deploy bug bash)
 - LE CLI invocation: `plesk ext letsencrypt cli.php` doesn't exist on 18.0.77 (errors with "Hook ApiCli is not implemented"). Use `plesk bin extension --exec letsencrypt cli.php --domain X --email Y`.
 - Plesk WHCS doesn't allow `subdomain --create -domain <subdomain>` — `-domain` must be a primary domain. For nested apex (e.g. `hosting.<primary>`), pass the multi-segment prefix as the subdomain name: `subdomain --create <sub>.hosting -domain ChamplinEnterprises.com`. Added `subdomainName()` helper.

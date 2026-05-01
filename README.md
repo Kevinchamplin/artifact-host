@@ -40,6 +40,13 @@ MCP client (Claude Desktop, etc.)
 
 `deploy_site` and `update_site` require an `index.html` at the root of `files[]`.
 
+## Limits
+
+- **Static only.** User subdomains are created with `-php false`; `.php` files are served as plain text. No server-side execution. Plan a separate `tier=dynamic` workflow if/when dynamic apps are in scope.
+- **Per-user rate limit.** Writes (deploy/update/delete): 30/min/user. Reads (list/logs): 120/min/user. 429 with `Retry-After` on overflow.
+- **File caps.** 5 MB per file, 100 MB per deploy (configurable via `ARTIFACTHOST_MAX_FILE_BYTES` / `ARTIFACTHOST_MAX_TOTAL_BYTES`).
+- **Subdomain rules.** 1-63 chars, lowercase alphanumeric + hyphens, no leading/trailing hyphen, not in the reserved list, not already taken (global, not per-user).
+
 ## Prereqs (VPS)
 
 - Plesk Obsidian 18.x with Let's Encrypt extension installed

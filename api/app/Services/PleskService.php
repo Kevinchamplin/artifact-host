@@ -25,10 +25,13 @@ class PleskService
         // is a primary domain. To host <sub>.<apex> where <apex> is itself a
         // subdomain (e.g. hosting.<primary>), pass the multi-segment prefix as
         // the subdomain name and the primary as -domain.
+        // -php false: artifact-host serves static files only. Default Plesk
+        // creates with PHP enabled, which would let any user upload a webshell.
         $this->runPlesk([
             'bin', 'subdomain', '--create', $this->subdomainName($subdomain),
             '-domain', $this->pleskSubscriptionDomain(),
             '-www-root', $wwwRoot,
+            '-php', 'false',
         ]);
 
         $info = $this->findSubdomain($fqdn);
