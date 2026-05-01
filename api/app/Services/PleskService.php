@@ -18,13 +18,16 @@ class PleskService
      */
     public function createSubdomain(string $subdomain): array
     {
-        $apex = $this->apex();
-        $fqdn = $subdomain.'.'.$apex;
+        $fqdn = $subdomain.'.'.$this->apex();
         $wwwRoot = '/'.$fqdn;
 
+        // Plesk Web Host Edition only supports subdomain --create when the parent
+        // is a primary domain. To host <sub>.<apex> where <apex> is itself a
+        // subdomain (e.g. hosting.<primary>), pass the multi-segment prefix as
+        // the subdomain name and the primary as -domain.
         $this->runPlesk([
-            'bin', 'subdomain', '--create', $subdomain,
-            '-domain', $apex,
+            'bin', 'subdomain', '--create', $this->subdomainName($subdomain),
+            '-domain', $this->pleskSubscriptionDomain(),
             '-www-root', $wwwRoot,
         ]);
 
@@ -38,9 +41,8 @@ class PleskService
 
     public function deleteSubdomain(string $subdomain): void
     {
-        $apex = $this->apex();
         $this->runPlesk([
-            'bin', 'subdomain', '--remove', $subdomain.'.'.$apex,
+            'bin', 'subdomain', '--remove', $subdomain.'.'.$this->apex(),
         ]);
     }
 
@@ -100,8 +102,11 @@ class PleskService
             throw new PleskException('Plesk API list failed: HTTP '.$resp->status().' '.$resp->body());
         }
 
+        // Plesk stores domain names case-sensitively but the REST `?name=` filter
+        // is case-insensitive. Match on ascii_name (always lowercase) to avoid
+        // brittle case comparisons.
         $domains = $resp->json();
-        $match = collect($domains)->firstWhere('name', $fqdn);
+        $match = collect($domains)->firstWhere('ascii_name', $fqdn);
 
         if (! $match || ! isset($match['id'])) {
             throw new PleskException('Subdomain created but not found in Plesk listing: '.$fqdn);
@@ -159,5 +164,30 @@ class PleskService
     private function subscriptionDomain(): string
     {
         return config('artifacthost.subscription_domain') ?: $this->apex();
+    }
+
+    private function pleskSubscriptionDomain(): string
+    {
+        return config('artifacthost.plesk_subscription_domain') ?: $this->subscriptionDomain();
+    }
+
+    /**
+     * Build the multi-segment subdomain name to pass to `subdomain --create`.
+     * For apex=hosting.<primary> and subdomain=foo, returns "foo.hosting".
+     * For apex equal to the primary (no nested subdomain), returns "foo".
+     */
+    private function subdomainName(string $subdomain): string
+    {
+        $apex = $this->apex();
+        $primary = $this->subscriptionDomain();
+        $suffix = '.'.$primary;
+
+        if (str_ends_with($apex, $suffix)) {
+            $prefix = substr($apex, 0, -strlen($suffix));
+
+            return $prefix === '' ? $subdomain : $subdomain.'.'.$prefix;
+        }
+
+        return $subdomain;
     }
 }

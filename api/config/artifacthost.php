@@ -6,8 +6,12 @@ return [
     // The Plesk subscription that owns the apex. Equals apex if apex is itself a
     // primary domain. If apex is a Plesk subdomain (e.g. hosting.<root>.com is a
     // subdomain of <root>.com) this must be the parent — vhost paths nest under
-    // /var/www/vhosts/<subscription_domain>/.
+    // /var/www/vhosts/<subscription_domain>/. Lowercase (filesystem path).
     'subscription_domain' => env('ARTIFACTHOST_SUBSCRIPTION_DOMAIN', 'champlinenterprises.com'),
+
+    // Plesk stores the primary domain case-sensitively and the CLI flag
+    // `-domain` is exact-match. Defaults to subscription_domain.
+    'plesk_subscription_domain' => env('ARTIFACTHOST_PLESK_SUBSCRIPTION_DOMAIN'),
 
     'le_email' => env('ARTIFACTHOST_LE_EMAIL', 'admin@champlinenterprises.com'),
 
