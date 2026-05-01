@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Frictionless onboarding (2026-05-01)
+- **`signup(email)` MCP tool** + matching `POST /api/v1/auth/signup` endpoint (public, 5/hour/IP rate limit). First-deploy flow needs zero out-of-band coordination — vibe coders install the MCP, ask the AI to deploy, AI calls signup automatically.
+- **Local key persistence** at `~/.artifact-host/auth.json` (mode 600) — the MCP server falls back to it when no `ARTIFACT_HOST_API_KEY` env var is set.
+- **Welcome email** via Mailgun (using existing CE infrastructure on `mg.815media.com`; will move to `mg.champlinenterprises.com` as part of the 815→CE transition). HTML + plain-text templates.
+- **Marketing page** at `https://hosting.champlinenterprises.com` — dark-themed single-pager with hero, how-it-works, install snippet, FAQ.
+- **MCP package bumped to `artifact-host-mcp@0.2.0`** — adds `signup` tool, makes `ARTIFACT_HOST_API_KEY` optional, falls back to local file.
+
 ### Repo split (2026-05-01)
 - **Public repo (this one) is now MCP-client-only.** The Laravel API source moved to a private operational repo. The public README is a "use the hosted service" funnel; the open-source surface is the MCP client (also published as [`artifact-host-mcp`](https://www.npmjs.com/package/artifact-host-mcp)).
 - Earlier commits in this repo's history still contain the API code as it was before the split — that's fine, the code there was MIT and was briefly public anyway. Future API changes happen in the private repo.
